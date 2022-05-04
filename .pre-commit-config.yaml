@@ -14,12 +14,12 @@ repos:
     hooks:
       - id: black
         args: [--safe, --quiet]
-#  - repo: local
-#    hooks:
-#      - id: pylint
-#        name: pylint
-#        entry: pylint
-#        language: system
-#        types: [python]
-#        args: ["-rn", "-sn", "--rcfile=.pylintrc", "--fail-on=I"]
-#        exclude: tests/functional/|tests/input|tests(/\w*)*data/|doc/
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [python]
+        args: ["-rn", "-sn", "--rcfile=.pylintrc", "--fail-on=I"]
+        exclude: tests/functional/|tests/input|tests(/\w*)*data/|doc/
