@@ -1,3 +1,5 @@
+[![CI](https://github.com/MysterionRise/hand-drawings-transformer/actions/workflows/ci.yml/badge.svg)](https://github.com/MysterionRise/hand-drawings-transformer/actions/workflows/ci.yml)
+
 # Application that transform drawn images on A4 paper into cropped, enhanced and warped images.
 
 ## Features
