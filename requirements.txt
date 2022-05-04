@@ -1,5 +1,7 @@
 opencv-python
 Wand
 black
+isort
 pylint
 pre-commit
+pytest

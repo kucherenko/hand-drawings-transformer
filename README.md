@@ -11,10 +11,16 @@ TBD
 python -m venv venv
 ```
 
-#### Install requirements
+#### Install Python requirements
 ```
 pip install -r requirements.txt
 ```
+
+#### Install ImageMagick
+```
+brew install freetype imagemagick
+```
+or via - https://imagemagick.org/script/download.php
 
 #### Install pre-commit hooks:
 ```
