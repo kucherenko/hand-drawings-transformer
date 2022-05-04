@@ -96,6 +96,11 @@ def main():
         base_corners = list(chain.from_iterable(base_corners))
         with Image(filename=file) as img:
             img.distort('perspective', base_corners)
+            img.enhance()
+            img.auto_orient()
+            img.auto_level()
+            img.normalize()
+            img.contrast()
             filename = file_name(file, 'final')
             img.save(filename=filename)
             print("Saved file - {filename}".format(filename=filename))
