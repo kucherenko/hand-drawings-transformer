@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ```
 brew install freetype imagemagick
 ```
-or via - https://imagemagick.org/script/download.php
+or via - https://docs.wand-py.org/en/0.6.7/guide/install.html#
 
 #### Install pre-commit hooks:
 ```
