@@ -15,9 +15,8 @@ def closest_node(node, nodes):
 
 
 def file_name(original_name, suffix):
-    return "{name}-{suffix}.jpeg".format(
-        name="".join(original_name.split(".")[:-1]), suffix=suffix
-    )
+    name = "".join(original_name.split(".")[:-1])
+    return f"{name}-{suffix}.jpeg"
 
 
 def prepare_image(image_name: str):
@@ -32,7 +31,7 @@ def prepare_image(image_name: str):
     return thresh
 
 
-def contours(prep_image, original):
+def find_contours(prep_image, original):
     orig_img = cv2.imread(original)
     contours, _ = cv2.findContours(prep_image, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
     new_contours = []
@@ -96,14 +95,13 @@ def corners(prep_image, original_name: str):
 
 
 def main():
-    pattern = "resources/images/{}.jpg".format(
-        sys.argv[1] if len(sys.argv) > 1 else "*"
-    )
+    pattern_str = sys.argv[1] if len(sys.argv) > 1 else "*"
+    pattern = f"resources/images/{pattern_str}.jpg"
     for file in glob.glob(pattern):
         prep = prepare_image(file)
         height, width = prep.shape[:2]
         cv2.imwrite("prep.jpeg", prep)
-        contoured_image = contours(prep, file)
+        contoured_image = find_contours(prep, file)
         cv2.imwrite("contour.jpeg", contoured_image)
         coordinates = corners2(prep)
         base_corners = list(
@@ -121,7 +119,7 @@ def main():
             img.contrast()
             filename = file_name(file, "final")
             img.save(filename=filename)
-            print("Saved file - {filename}".format(filename=filename))
+            print(f"Saved file - {filename}")
 
 
 if __name__ == "__main__":
