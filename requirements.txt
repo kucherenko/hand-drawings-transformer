@@ -1,2 +1,6 @@
 opencv-python
 Wand
+fastapi
+uvicorn[standard]
+typing
+python-multipart
