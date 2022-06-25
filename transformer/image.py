@@ -1,5 +1,10 @@
+import urllib
+from urllib.parse import urlparse
+from urllib.request import urlopen
+
+import numpy as np
 from itertools import chain
-from os.path import basename, commonpath, abspath, dirname, join
+from os.path import basename, dirname, join
 
 import cv2
 from wand.image import Image
@@ -7,16 +12,46 @@ from wand.image import Image
 from transformer.utils import file_name, closest_node
 
 
-def process(file, dir=None):
+def resize(url, corners_list, folder=None):
+    if not folder:
+        folder = './static/images/'
+    parsed_url = urlparse(url)
+    filename = file_name(join(folder, parsed_url.path.split('/')[-1]), 'resized')
+    try:
+        f = urlopen(url)
+        with Image(file=f) as img:
+            # arguments = list([*corners_list, 0, 0, 0, img.height, img.width, img.height, img.width, 0])
+            # base_corners = (*corners_list, 0, 0, 0, img.height, img.width, img.height, img.width, 0)
+            # print(len(base_corners))
+            # print(base_corners)
+            # print(list(base_corners))
+            # base_corners = list(chain.from_iterable(base_corners))
+            # print(base_corners)
+            img.distort('perspective', (0, 0, 20, 60,
+                 90, 0, 70, 63,
+                 0, 90, 5, 83,
+                 90, 90, 85, 88))
+
+            img.save(filename=filename)
+            print("Saved file - {filename}".format(filename=filename))
+    except Exception as e:
+        print(e)
+    finally:
+        f.close()
+        return filename
+
+
+def process(file, folder=None):
     prep = prepare(file)
-    if not dir:
-        dir = dirname(file)
+    if not folder:
+        folder = dirname(file)
     height, width = prep.shape[:2]
     coordinates = corners(prep)
     base_corners = list(
         chain.from_iterable(zip(coordinates, [(0, 0), (0, height), (width, height), (width, 0)]))
     )
     base_corners = list(chain.from_iterable(base_corners))
+    filename = file_name(join(folder, basename(file)), 'final')
     with Image(filename=file) as img:
         img.distort('perspective', base_corners)
         img.enhance()
@@ -24,9 +59,9 @@ def process(file, dir=None):
         img.auto_level()
         img.normalize()
         img.contrast()
-        filename = file_name(join(dir, basename(file)), 'final')
         img.save(filename=filename)
         print("Saved file - {filename}".format(filename=filename))
+    return filename
 
 
 def prepare(image_name: str):

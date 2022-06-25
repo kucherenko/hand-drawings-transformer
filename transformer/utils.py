@@ -1,4 +1,5 @@
 import numpy as np
+import requests
 
 
 def closest_node(node, nodes):
@@ -15,3 +16,15 @@ def file_name(original, suffix):
 def save_file(filename, data):
     with open(filename, 'wb') as f:
         f.write(data)
+
+
+def upload_file(file, record, token, url):
+    data = {
+        'record': record,
+        'token': token,
+    }
+    files = {
+        'file': open(file, 'rb')
+    }
+    r = requests.post(url, data=data, files=files)
+    print(r)
