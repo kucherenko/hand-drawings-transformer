@@ -9,7 +9,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 
-from transformer.image import prepare, corners, process, resize
+from transformer.image import prepare, corners, process, fix_colors
 from transformer.utils import save_file, upload_file
 
 URL = os.getenv('URL', default='http://localhost:8000')
@@ -49,14 +49,6 @@ app.add_middleware(
 )
 
 
-@app.post("/resize")
-async def resize_image(image: Image):
-    filename = resize(image.url, image.corners)
-    return {
-        "url": "{url}/static/images/{file}".format(file=filename, url=URL),
-    }
-
-
 @app.post("/upload")
 async def upload(file: UploadFile):
     contents = await file.read()
@@ -94,6 +86,19 @@ async def process_url(img: Img):
     filename = "./static/images/{}".format(os.path.basename(a.path))
     save_file(filename, contents)
     result = process(filename, 'static/images')
+    upload_file(result, img.record, TOKEN, UPLOAD_URL)
+    return {
+        "url": "{url}/{file}".format(file=result, url=URL),
+    }
+
+
+@app.post("/fix_colors")
+async def fix_colors_service(img: Img):
+    a = urlparse(img.url)
+    contents = requests.get(img.url).content
+    filename = "./static/images/{}".format(os.path.basename(a.path))
+    save_file(filename, contents)
+    result = fix_colors(filename, 'static/images')
     upload_file(result, img.record, TOKEN, UPLOAD_URL)
     return {
         "url": "{url}/{file}".format(file=result, url=URL),
