@@ -2,11 +2,7 @@
 
 # Application that transform drawn images on A4 paper into cropped, enhanced and warped images.
 
-## Features
-
-TBD
-
-## How to run and contribute
+## How to build
 
 #### Create venv
 ```
@@ -27,3 +23,25 @@ or via - https://docs.wand-py.org/en/0.6.7/guide/install.html#
 #### Install pre-commit hooks:
 ```
 pre-commit install
+```
+
+## How to run
+
+### Web Server
+```bash
+uvicorn main:app --reload
+```
+or
+```bash
+python ./main.py
+```
+
+### CLI
+
+```bash
+python cli.py
+```
+or
+```bash
+python cli.py [file name without ext]
+```

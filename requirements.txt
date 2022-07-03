@@ -5,3 +5,10 @@ isort
 pylint
 pre-commit
 pytest
+fastapi
+uvicorn[standard]
+typing
+python-multipart
+pydantic
+numpy
+requests
