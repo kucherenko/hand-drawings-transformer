@@ -1,15 +1,10 @@
-import urllib
-from urllib.parse import urlparse
-from urllib.request import urlopen
-
-import numpy as np
 from itertools import chain
 from os.path import basename, dirname, join
 
 import cv2
 from wand.image import Image
 
-from transformer.utils import file_name, closest_node
+from transformer.utils import closest_node, file_name
 
 
 def process(file, folder=None):
@@ -19,24 +14,26 @@ def process(file, folder=None):
     height, width = prep.shape[:2]
     coordinates = corners(prep)
     base_corners = list(
-        chain.from_iterable(zip(coordinates, [(0, 0), (0, height), (width, height), (width, 0)]))
+        chain.from_iterable(
+            zip(coordinates, [(0, 0), (0, height), (width, height), (width, 0)])
+        )
     )
     base_corners = list(chain.from_iterable(base_corners))
-    filename = file_name(join(folder, basename(file)), 'final')
+    filename = file_name(join(folder, basename(file)), "final")
     with Image(filename=file) as img:
-        img.distort('perspective', base_corners)
+        img.distort("perspective", base_corners)
         img.enhance()
         img.auto_orient()
         img.auto_level()
         img.normalize()
         img.contrast()
         img.save(filename=filename)
-        print("Saved file - {filename}".format(filename=filename))
+        print(f"Saved file - {filename}")
     return filename
 
 
 def fix_colors(file, folder=None):
-    filename = file_name(join(folder, basename(file)), 'final-colors')
+    filename = file_name(join(folder, basename(file)), "final-colors")
     with Image(filename=file) as img:
         img.enhance()
         img.auto_orient()
@@ -44,7 +41,7 @@ def fix_colors(file, folder=None):
         img.normalize()
         img.contrast()
         img.save(filename=filename)
-        print("Saved file - {filename}".format(filename=filename))
+        print(f"Saved file - {filename}")
     return filename
 
 
@@ -61,7 +58,9 @@ def prepare(image_name: str):
 
 def contours(prep_image, original):
     orig_img = cv2.imread(original)
-    image_contours, _ = cv2.findContours(prep_image, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+    image_contours, _ = cv2.findContours(
+        prep_image, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE
+    )
     new_contours = []
     height, width = prep_image.shape[:2]
 
@@ -74,12 +73,14 @@ def contours(prep_image, original):
             new_contours.append(contour)
 
     cv2.drawContours(orig_img, new_contours, -1, (255, 0, 0), 10)
-    cv2.imwrite(file_name(original, 'contours'), orig_img)
+    cv2.imwrite(file_name(original, "contours"), orig_img)
     return orig_img
 
 
 def corners(prep_image):
-    contours_list, _ = cv2.findContours(prep_image, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE)
+    contours_list, _ = cv2.findContours(
+        prep_image, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_NONE
+    )
     height, width = prep_image.shape[:2]
 
     points = []
@@ -110,6 +111,10 @@ def corners_lab(prep_image, original_name: str):
         corner_points.append((x, y))
         cv2.circle(original, (int(x), int(y)), 10, (0, 255, 0), -1)
 
-    cv2.imwrite(file_name(original_name, 'with-corners'), original, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+    cv2.imwrite(
+        file_name(original_name, "with-corners"),
+        original,
+        [int(cv2.IMWRITE_JPEG_QUALITY), 100],
+    )
     corner_points = sorted(corner_points, key=lambda k: [k[1], k[0]])
     return corner_points

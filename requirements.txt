@@ -1,5 +1,10 @@
 opencv-python
 Wand
+black
+isort
+pylint
+pre-commit
+pytest
 fastapi
 uvicorn[standard]
 typing
